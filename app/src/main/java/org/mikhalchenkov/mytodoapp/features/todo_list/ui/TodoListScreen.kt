@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.mikhalchenkov.mytodoapp.core.domain.entity.Todo
 import org.mikhalchenkov.mytodoapp.core.extensions.collectAsState
 import org.mikhalchenkov.mytodoapp.features.todo_list.store.TodoListIntent
@@ -101,7 +102,7 @@ fun TodoListScreen(store: TodoListStore) {
 
 @Composable
 private fun TodoListContent(
-    todos: List<Todo>,
+    todos: ImmutableList<Todo>,
     onToggleTodo: (Long) -> Unit,
     onDeleteTodo: (Long) -> Unit,
     modifier: Modifier = Modifier

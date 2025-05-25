@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import org.mikhalchenkov.mytodoapp.core.domain.repository.TodoRepository
 
@@ -42,7 +43,7 @@ class TodoListStoreFactory(
             scope.launch {
                 dispatch(TodoListMessage.Loading)
                 try {
-                    val todos = repository.getTodos()
+                    val todos = repository.getTodos().toImmutableList()
                     dispatch(TodoListMessage.Loaded(todos))
                 } catch (e: Exception) {
                     dispatch(TodoListMessage.Error(e.message ?: "Unknown error"))
@@ -99,13 +100,17 @@ class TodoListStoreFactory(
                         } else {
                             todo
                         }
-                    },
+                    }.toImmutableList(),
                     isLoading = false
                 )
 
-                is TodoListMessage.Added -> copy(todos = todos + msg.todo, isLoading = false)
+                is TodoListMessage.Added -> copy(
+                    todos = (todos + msg.todo).toImmutableList(),
+                    isLoading = false
+                )
+
                 is TodoListMessage.Deleted -> copy(
-                    todos = todos.filter { it.id != msg.id },
+                    todos = todos.filter { it.id != msg.id }.toImmutableList(),
                     isLoading = false
                 )
 
