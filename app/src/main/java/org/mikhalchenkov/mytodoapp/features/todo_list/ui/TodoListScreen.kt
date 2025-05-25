@@ -37,6 +37,27 @@ fun TodoListScreen(store: TodoListStore) {
     val state by store.collectAsState()
     var newTodoText by remember { mutableStateOf("") }
 
+    val rememberedOnToggleTodo = remember(store) {
+        { id: Long ->
+            store.accept(TodoListIntent.ToggleTodo(id))
+        }
+    }
+
+    val rememberedOnDeleteTodo = remember(store) {
+        { id: Long ->
+            store.accept(TodoListIntent.DeleteTodo(id))
+        }
+    }
+
+    val rememberedOnAddTodo = remember(store) {
+        {
+            if (newTodoText.isNotBlank()) {
+                store.accept(TodoListIntent.AddTodo(newTodoText))
+                newTodoText = ""
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,19 +69,12 @@ fun TodoListScreen(store: TodoListStore) {
         ) {
             TextField(
                 value = newTodoText,
-                onValueChange = { newTodoText = it },
+                onValueChange = remember { { newTodoText = it } },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Add Task") }
             )
 
-            IconButton(
-                onClick = {
-                    if (newTodoText.isNotBlank()) {
-                        store.accept(TodoListIntent.AddTodo(newTodoText))
-                        newTodoText = ""
-                    }
-                }
-            ) {
+            IconButton(onClick = rememberedOnAddTodo) {
                 Icon(Icons.Default.Add, contentDescription = "Add Task")
             }
         }
@@ -77,12 +91,8 @@ fun TodoListScreen(store: TodoListStore) {
             state.todos.isEmpty() -> MessageContent("Nothing to show yet, add your first task!")
             else -> TodoListContent(
                 state.todos,
-                onToggleTodo = { id ->
-                    store.accept(TodoListIntent.ToggleTodo(id))
-                },
-                onDeleteTodo = { id ->
-                    store.accept(TodoListIntent.DeleteTodo(id))
-                },
+                onToggleTodo = rememberedOnToggleTodo,
+                onDeleteTodo = rememberedOnDeleteTodo,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -97,12 +107,12 @@ private fun TodoListContent(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(todos.size) { index ->
+        items(todos.size, key = { index -> todos[index].id }) { index ->
             val todo = todos[index]
             TodoItem(
                 todo = todo,
-                onToggle = { onToggleTodo(todo.id) },
-                onDelete = { onDeleteTodo(todo.id) }
+                onToggle = remember(todo.id, onToggleTodo) { { onToggleTodo(todo.id) } },
+                onDelete = remember(todo.id, onDeleteTodo) { { onDeleteTodo(todo.id) } }
             )
         }
     }
