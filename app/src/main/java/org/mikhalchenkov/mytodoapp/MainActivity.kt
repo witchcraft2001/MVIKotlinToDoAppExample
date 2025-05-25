@@ -7,41 +7,32 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.mikhalchenkov.mytodoapp.ui.theme.MyToDoAppTheme
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import org.mikhalchenkov.mytodoapp.core.data.repository.TodoRepositoryImpl
+import org.mikhalchenkov.mytodoapp.core.ui.theme.MyToDoAppTheme
+import org.mikhalchenkov.mytodoapp.features.todo_list.store.TodoListStoreFactory
+import org.mikhalchenkov.mytodoapp.features.todo_list.ui.TodoListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val storeFactory = DefaultStoreFactory()
+        val repository = TodoRepositoryImpl()
+        val todoListStoreFactory = TodoListStoreFactory(storeFactory, repository)
+        val store = todoListStoreFactory.create()
+
         enableEdgeToEdge()
         setContent {
             MyToDoAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Surface(modifier = Modifier.padding(innerPadding)) {
+                        TodoListScreen(store)
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyToDoAppTheme {
-        Greeting("Android")
     }
 }

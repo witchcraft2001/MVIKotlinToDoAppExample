@@ -1,4 +1,4 @@
-package org.mikhalchenkov.mytodoapp.ui.theme
+package org.mikhalchenkov.mytodoapp.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

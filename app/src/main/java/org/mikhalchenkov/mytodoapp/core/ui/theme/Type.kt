@@ -1,4 +1,4 @@
-package org.mikhalchenkov.mytodoapp.ui.theme
+package org.mikhalchenkov.mytodoapp.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
