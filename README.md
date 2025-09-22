@@ -1,6 +1,6 @@
 # MyToDoApp
 
-A minimalist Android application template demonstrating the use of MVIKotlin and modern development practices.
+A minimalist Android application template demonstrating the use of MVIKotlin and modern development practices, based on [Medium article](https://medium.com/@mikhaltchenkov/mvikotlin-in-practice-a-modern-architecture-framework-for-android-and-kmp-ca68e58be94b).
 
 ![MyToDoApp](./screenshots/screenshot1.png)
 
